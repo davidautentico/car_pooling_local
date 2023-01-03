@@ -3,14 +3,12 @@ package com.cabify.carpooling.exceptions;
 import java.util.Optional;
 
 import com.cabify.carpooling.dtos.ProblemDetailsDTO;
-import org.apache.tomcat.util.net.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -43,6 +41,17 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   public ResponseEntity<Object> handleJourneyNotFoundException(final JourneyNotFoundException ex,
       final WebRequest request) {
     return getEmptyErrorResponse(HttpStatus.NOT_FOUND, request, ex, null);
+  }
+  @ExceptionHandler(InvalidJourneyIdException.class)
+  public ResponseEntity<Object> handleInvalidJourneyIdException(final InvalidJourneyIdException ex,
+      final WebRequest request) {
+    return getEmptyErrorResponse(HttpStatus.BAD_REQUEST, request, ex, null);
+  }
+
+  @ExceptionHandler(CarNotAssignedException.class)
+  public ResponseEntity<Object> handleJourneyNotFoundException(final InvalidJourneyIdException ex,
+      final WebRequest request) {
+    return getEmptyErrorResponse(HttpStatus.NO_CONTENT, request, ex, null);
   }
 
 

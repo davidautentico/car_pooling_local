@@ -3,12 +3,13 @@ package com.cabify.carpooling.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.cabify.carpooling.exceptions.CarNotAssignedException;
 import com.cabify.carpooling.exceptions.DuplicatedJourneyIdException;
+import com.cabify.carpooling.exceptions.InvalidJourneyIdException;
 import com.cabify.carpooling.exceptions.JourneyNotFoundException;
 import com.cabify.carpooling.helpers.CarListFactory;
 import com.cabify.carpooling.repositories.CarRepository;
@@ -59,6 +60,10 @@ public class CarPoolingService {
   }
 
   public void newJourney(int groupId, int passengers) {
+
+    if (groupId <= 0) {
+      throw new InvalidJourneyIdException(String.format("Journey ID <%d> is invalid", groupId));
+    }
     System.out.println("[new journey] write lock");
     this.writeLock.lock();
     try {
@@ -83,7 +88,12 @@ public class CarPoolingService {
     }
   }
 
-  public Car dropoff(int journeyID) {
+  public void dropoff(int journeyID) {
+
+    if (journeyID <= 0) {
+      throw new InvalidJourneyIdException(String.format("Journey ID <%d> is invalid", journeyID));
+    }
+
     System.out.println("[dropoff] write lock");
     writeLock.lock();
 
@@ -99,9 +109,8 @@ public class CarPoolingService {
         reassign(car);
       } else {
         pending.removeIf(j -> j.getId() == journey.get().getId());
+        throw new CarNotAssignedException(String.format("Journey ID <%d> has no car assigned", journeyID));
       }
-      return car;
-
     } finally {
       System.out.println("[dropoff] write unlock");
       writeLock.unlock();

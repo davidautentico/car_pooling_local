@@ -50,39 +50,25 @@ public class CarPoolingController {
   }
 
   @PostMapping("/journey")
-  public ResponseEntity<Void> postJourney(@RequestBody GroupDTO group) {
+  @ResponseStatus(HttpStatus.OK)
+  public void postJourney(@RequestBody GroupDTO group) {
 
     log.info("[*** Journey request received] Group: " + group);
 
-    if (group.getId() <= 0) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
     carJourneyService.newJourney(group.getId(), group.getPassengers());
-    return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+    log.info("[*** Journey request done] Group: " + group);
   }
 
   @PostMapping("/dropoff")
-  public ResponseEntity<Void> postDropoff(@RequestParam("ID") int journeyID) {
+  @ResponseStatus(HttpStatus.OK)
+  public void postDropoff(@RequestParam("ID") int journeyID) {
 
     log.info("[*** Dropoff request received] Journey: " + journeyID);
 
-    if (journeyID <= 0) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-    try {
-      Car car = carJourneyService.dropoff(journeyID);
-      log.info("[*** Dropoff request received] waiting...");
+    carJourneyService.dropoff(journeyID);
 
-      if (car != null) {
-        return new ResponseEntity<>(HttpStatus.OK);
-      }
-
-      log.info("[*** Dropoff request received] end Journey: " + journeyID);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } catch (NoSuchElementException e) {
-      log.info("[*** Dropoff request received] NOT FOUND");
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    log.info("[*** Dropoff request received] end Journey: " + journeyID);
   }
 
   @PostMapping(
