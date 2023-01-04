@@ -2,7 +2,7 @@ package com.drosa.cabify.carpooling.api.rest.responses;
 
 import java.util.Optional;
 
-import com.drosa.cabify.carpooling.domain.dtos.ProblemDetailsDTO;
+import com.drosa.cabify.carpooling.api.rest.dtos.ProblemDetailsDTO;
 import com.drosa.cabify.carpooling.domain.exceptions.CarNotAssignedException;
 import com.drosa.cabify.carpooling.domain.exceptions.DuplicatedCarIdException;
 import com.drosa.cabify.carpooling.domain.exceptions.DuplicatedJourneyIdException;
@@ -29,19 +29,19 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   @ExceptionHandler(DuplicatedCarIdException.class)
   public ResponseEntity<Object> handleDuplicatedCarIdException(final DuplicatedCarIdException ex,
       final WebRequest request) {
-    return getErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, request, ex, null);
+    return getErrorResponse(HttpStatus.BAD_REQUEST, request, ex, null);
   }
 
   @ExceptionHandler(DuplicatedJourneyIdException.class)
   public ResponseEntity<Object> handleDuplicatedJourneyIdException(final DuplicatedJourneyIdException ex,
       final WebRequest request) {
-    return getErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, request, ex, null);
+    return getErrorResponse(HttpStatus.BAD_REQUEST, request, ex, null);
   }
 
   @ExceptionHandler(InvalidSeatSizeException.class)
   public ResponseEntity<Object> handleInvalidSeatSizeException(final InvalidSeatSizeException ex,
       final WebRequest request) {
-    return getErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, request, ex, null);
+    return getErrorResponse(HttpStatus.BAD_REQUEST, request, ex, null);
   }
 
   @ExceptionHandler(JourneyNotFoundException.class)
@@ -62,9 +62,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   }
 
   @ExceptionHandler(CarNotAssignedException.class)
-  public ResponseEntity<Object> handleCarNotAssignedException(final InvalidJourneyIdException ex,
+  public ResponseEntity<Object> handleCarNotAssignedException(final CarNotAssignedException ex,
       final WebRequest request) {
-    return getEmptyErrorResponse(HttpStatus.NO_CONTENT, request, ex, null);
+    return getEmptyInfoResponse(HttpStatus.NO_CONTENT, request, ex, null);
   }
 
 
@@ -92,6 +92,16 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     logger.error(messageBuilder.toString(), ex);
   }
+
+  private void doLogInfoMessage(final WebRequest request, final Exception ex, final String message) {
+    final StringBuilder messageBuilder = new StringBuilder();
+    if (message != null) {
+      messageBuilder.append(String.format("Info message: '%s': ", message));
+    }
+
+    logger.info(messageBuilder.toString(), ex);
+  }
+
   private ResponseEntity<Object> getErrorResponse(final HttpStatus status,
       final HttpHeaders headers,
       final WebRequest request,
@@ -109,6 +119,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
       final Exception cause,
       final String message) {
     doLogErrorMessage(request, cause, message);
+
+    return new ResponseEntity<>(null, getDefaultHttpHeaders(), status);
+  }
+
+  private ResponseEntity<Object> getEmptyInfoResponse(final HttpStatus status,
+      final WebRequest request,
+      final Exception cause,
+      final String message) {
+    doLogInfoMessage(request, cause, message);
 
     return new ResponseEntity<>(null, getDefaultHttpHeaders(), status);
   }

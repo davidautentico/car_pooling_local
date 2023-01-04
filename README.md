@@ -89,6 +89,7 @@ Responses:
 * **200 OK** or **204 No Content** When the group is unregistered correctly.
 * **404 Not Found** When the group is not to be found.
 * **400 Bad Request** When there is a failure in the request format or the payload can't be unmarshalled.
+* **415 Unsupported media type** When the content type is not url encoded.
 
 ### POST /locate
 
@@ -107,3 +108,4 @@ Responses:
 * **204 No Content** When the group is waiting to be assigned to a car.
 * **404 Not Found** When the group is not to be found.
 * **400 Bad Request** When there is a failure in the request format or the payload can't be unmarshalled.
+* **415 Unsupported media type** When the content type is not url encoded.

@@ -1,9 +1,10 @@
-package com.drosa.cabify.carpooling.domain.dtos;
+package com.drosa.cabify.carpooling.api.rest.dtos;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ProblemDetailsDTO  implements Serializable {
+public class ProblemDetailsDTO implements Serializable {
+
   private static final long serialVersionUID = 1L;
 
   private final String type;
@@ -22,7 +23,6 @@ public class ProblemDetailsDTO  implements Serializable {
   public String getTitle() {
     return title;
   }
-
 
   @Override
   public boolean equals(Object o) {
@@ -54,8 +54,7 @@ public class ProblemDetailsDTO  implements Serializable {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {

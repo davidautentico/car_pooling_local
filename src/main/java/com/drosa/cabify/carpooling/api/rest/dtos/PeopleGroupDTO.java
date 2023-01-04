@@ -1,9 +1,7 @@
-package com.drosa.cabify.carpooling.domain.dtos;
+package com.drosa.cabify.carpooling.api.rest.dtos;
 
 public class PeopleGroupDTO {
-
   private final int id;
-
   private final int people;
 
   public PeopleGroupDTO(int id, int people) {

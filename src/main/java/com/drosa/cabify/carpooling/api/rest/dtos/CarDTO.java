@@ -1,7 +1,6 @@
-package com.drosa.cabify.carpooling.domain.dtos;
+package com.drosa.cabify.carpooling.api.rest.dtos;
 
 public class CarDTO {
-
   private final int id;
   private final int seats;
 
